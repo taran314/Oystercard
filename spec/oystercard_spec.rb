@@ -17,6 +17,16 @@ alias_method :card, :subject
   it "throws an error if balance exceeds limit" do
     expect { card.top_up(95) }.to raise_error "Balance exceeds limit of £#{Oystercard::DEFAULT_BALANCE}"
   end
+
+  it "responds to deduct" do
+    expect(card).to respond_to(:deduct)
+  end
+
+  it "it deducts money from the balance" do
+    card.top_up(20)
+    card.deduct(10)
+    expect(card.balance).to eq 10
+  end
 end
 
 
