@@ -27,6 +27,29 @@ alias_method :card, :subject
     card.deduct(10)
     expect(card.balance).to eq 10
   end
+
+  it "knows when it's in_journey" do
+    expect(card).not_to be_in_journey
+  end
+
+  it "responds to touch in" do
+    expect(card).to respond_to(:touch_in)
+  end
+
+  it "changes in_journey to true when touch_in" do
+    card.touch_in
+    expect(card.in_journey?).to eq(true)
+  end
+
+  it "responds to touch_out" do
+    expect(card).to respond_to(:touch_out)
+  end
+
+  it "changes in_journey to false when touch_out" do
+    card.touch_in
+    card.touch_out
+    expect(card.in_journey?).to eq false
+  end
 end
 
 
