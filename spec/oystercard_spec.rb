@@ -37,6 +37,7 @@ alias_method :card, :subject
   end
 
   it "changes in_journey to true when touch_in" do
+    card.top_up(Oystercard::MINIMUM_FARE)
     card.touch_in
     expect(card.in_journey?).to eq(true)
   end
@@ -46,9 +47,14 @@ alias_method :card, :subject
   end
 
   it "changes in_journey to false when touch_out" do
+    card.top_up(Oystercard::MINIMUM_FARE) 
     card.touch_in
     card.touch_out
     expect(card.in_journey?).to eq false
+  end
+
+  it "throws an error if insufficient balance on card" do
+    expect { card.touch_in }.to raise_error "Insufficient funds on card"
   end
 end
 
