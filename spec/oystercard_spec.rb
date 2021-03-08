@@ -18,15 +18,17 @@ alias_method :card, :subject
     expect { card.top_up(95) }.to raise_error "Balance exceeds limit of £#{Oystercard::DEFAULT_BALANCE}"
   end
 
-  it "responds to deduct" do
-    expect(card).to respond_to(:deduct)
-  end
+  # Removed tests because "deduct" method is private
 
-  it "it deducts money from the balance" do
-    card.top_up(20)
-    card.deduct(10)
-    expect(card.balance).to eq 10
-  end
+  #it "responds to deduct" do
+  #  expect(card).to respond_to(:deduct)
+  #end
+
+  #it "it deducts money from the balance" do
+  #  card.top_up(20)
+  #  card.deduct(10)
+  #  expect(card.balance).to eq 10
+  #end
 
   it "knows when it's in_journey" do
     expect(card).not_to be_in_journey
@@ -47,7 +49,7 @@ alias_method :card, :subject
   end
 
   it "changes in_journey to false when touch_out" do
-    card.top_up(Oystercard::MINIMUM_FARE) 
+    card.top_up(Oystercard::MINIMUM_FARE)
     card.touch_in
     card.touch_out
     expect(card.in_journey?).to eq false
@@ -55,6 +57,12 @@ alias_method :card, :subject
 
   it "throws an error if insufficient balance on card" do
     expect { card.touch_in }.to raise_error "Insufficient funds on card"
+  end
+
+  it "reduces the balance by the minimum fare on touch_out" do
+    card.top_up(Oystercard::MINIMUM_FARE)
+    card.touch_in
+    expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
   end
 end
 
