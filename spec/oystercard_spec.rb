@@ -2,6 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 alias_method :card, :subject
+let(:station) { double('hackney') }
+
   it "Checking balance on card" do
     expect(card).to respond_to(:balance)
   end
@@ -40,7 +42,7 @@ alias_method :card, :subject
 
   it "changes in_journey to true when touch_in" do
     card.top_up(Oystercard::MINIMUM_FARE)
-    card.touch_in
+    card.touch_in("Hackney")
     expect(card.in_journey?).to eq(true)
   end
 
@@ -50,20 +52,34 @@ alias_method :card, :subject
 
   it "changes in_journey to false when touch_out" do
     card.top_up(Oystercard::MINIMUM_FARE)
-    card.touch_in
+    card.touch_in("Hackney")
     card.touch_out
     expect(card.in_journey?).to eq false
   end
 
   it "throws an error if insufficient balance on card" do
-    expect { card.touch_in }.to raise_error "Insufficient funds on card"
+    expect { card.touch_in("Hackney") }.to raise_error "Insufficient funds on card"
   end
 
   it "reduces the balance by the minimum fare on touch_out" do
     card.top_up(Oystercard::MINIMUM_FARE)
-    card.touch_in
+    card.touch_in("Hackney")
     expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
   end
+
+  it "remembers the touch_in station" do
+    card.top_up(20)
+    card.touch_in(station)
+    expect(card.entry_station).to eq(station)
+  end
+
+   it "resets entry_station to nil on touch_out" do
+     card.top_up(20)
+     card.touch_in(station)
+     card.touch_out
+     expect(card.entry_station).to eq(nil)
+   end
+
 end
 
 
