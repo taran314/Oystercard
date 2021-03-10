@@ -2,7 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 alias_method :card, :subject
-let(:station) { double('hackney') }
+let(:station) { double('Hackney') }
+let(:station2) { double('Moorgate') }
 
   it "Checking balance on card" do
     expect(card).to respond_to(:balance)
@@ -42,7 +43,7 @@ let(:station) { double('hackney') }
 
   it "changes in_journey to true when touch_in" do
     card.top_up(Oystercard::MINIMUM_FARE)
-    card.touch_in("Hackney")
+    card.touch_in(station)
     expect(card.in_journey?).to eq(true)
   end
 
@@ -52,8 +53,8 @@ let(:station) { double('hackney') }
 
   it "changes in_journey to false when touch_out" do
     card.top_up(Oystercard::MINIMUM_FARE)
-    card.touch_in("Hackney")
-    card.touch_out
+    card.touch_in(station)
+    card.touch_out(station2)
     expect(card.in_journey?).to eq false
   end
 
@@ -63,8 +64,8 @@ let(:station) { double('hackney') }
 
   it "reduces the balance by the minimum fare on touch_out" do
     card.top_up(Oystercard::MINIMUM_FARE)
-    card.touch_in("Hackney")
-    expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
+    card.touch_in(station)
+    expect { card.touch_out(station2) }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
   end
 
   it "remembers the touch_in station" do
@@ -76,8 +77,19 @@ let(:station) { double('hackney') }
    it "resets entry_station to nil on touch_out" do
      card.top_up(20)
      card.touch_in(station)
-     card.touch_out
+     card.touch_out(station2)
      expect(card.entry_station).to eq(nil)
+   end
+
+   it "stores one completed journey history" do
+     card.top_up(20)
+     card.touch_in(station)
+     card.touch_out(station2)
+     expect(card.history[0]).to eq({ entry: station, exit: station2 })
+   end
+
+   it "returns an empty history when card is new" do
+     expect(card.history).to eq []
    end
 
 end
