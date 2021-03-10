@@ -1,15 +1,15 @@
 class Oystercard
 
-attr_accessor :balance, :entry_station, :history
+attr_accessor :balance, :entry_station, :history, :journey
 DEFAULT_BALANCE = 90
 MINIMUM_FARE = 1
-COMPLETE_JOURNEY = { entry: nil, exit: nil }
+# COMPLETE_JOURNEY = { entry: nil, exit: nil }
 
   def initialize
     @balance = 0
     @entry_station = nil
     @history = []
-    @journey = COMPLETE_JOURNEY
+    @journey = { entry: nil, exit: nil }
   end
 
   def top_up(amount)
@@ -30,7 +30,7 @@ COMPLETE_JOURNEY = { entry: nil, exit: nil }
   def touch_out(station)
     @balance -= MINIMUM_FARE
     @journey[:exit] = station
-    @history << @journey
+    journey_to_history
     @entry_station = nil
   end
 
@@ -38,6 +38,11 @@ COMPLETE_JOURNEY = { entry: nil, exit: nil }
 
   def deduct(amount)
     @balance -= amount
+  end
+
+  def journey_to_history
+    @history << @journey
+    @journey = { entry: nil, exit: nil }
   end
 
 end

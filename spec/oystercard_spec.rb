@@ -92,6 +92,9 @@ let(:station2) { double('Moorgate') }
      expect(card.history).to eq []
    end
 
+   it "resets journey when touched out" do
+     expect(card.journey).to eq({ entry: nil, exit: nil })
+   end
 end
 
 
