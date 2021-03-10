@@ -71,7 +71,7 @@ let(:station2) { double('Moorgate') }
   it "remembers the touch_in station" do
     card.top_up(20)
     card.touch_in(station)
-    expect(card.entry_station).to eq(station)
+    expect(card.journey[:entry]).to eq(station)
   end
 
    it "resets entry_station to nil on touch_out" do
