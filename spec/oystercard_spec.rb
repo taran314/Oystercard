@@ -68,32 +68,35 @@ let(:station2) { double('Moorgate') }
     expect { card.touch_out(station2) }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
   end
 
-  it "remembers the touch_in station" do
-    card.top_up(20)
-    card.touch_in(station)
-    expect(card.journey[:entry]).to eq(station)
-  end
+  context "remembering stations" do
+    before do
+      card.top_up(20)
+      card.touch_in(station)
+    end
 
-   it "resets entry_station to nil on touch_out" do
-     card.top_up(20)
-     card.touch_in(station)
-     card.touch_out(station2)
-     expect(card.entry_station).to eq(nil)
-   end
+    it "remembers the touch_in station" do
+      expect(card.journey[:entry]).to eq(station)
+    end
 
-   it "stores one completed journey history" do
-     card.top_up(20)
-     card.touch_in(station)
-     card.touch_out(station2)
-     expect(card.history[0]).to eq({ entry: station, exit: station2 })
+     it "resets entry_station to nil on touch_out" do
+       card.touch_out(station2)
+       expect(card.entry_station).to eq(nil)
+     end
+
+     it "stores one completed journey history" do
+       card.touch_out(station2)
+       expect(card.history[0]).to eq({ entry: station, exit: station2 })
+     end
+
+     it "resets journey when touched out" do
+       card.touch_out(station2)
+       expect(card.journey).to eq({ entry: nil, exit: nil })
+     end
+
    end
 
    it "returns an empty history when card is new" do
      expect(card.history).to eq []
-   end
-
-   it "resets journey when touched out" do
-     expect(card.journey).to eq({ entry: nil, exit: nil })
    end
 end
 
