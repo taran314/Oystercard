@@ -1,9 +1,8 @@
 class Oystercard
 
-attr_accessor :balance, :entry_station, :history, :journey
+attr_reader :balance, :entry_station, :history
 DEFAULT_BALANCE = 90
 MINIMUM_FARE = 1
-# COMPLETE_JOURNEY = { entry: nil, exit: nil }
 
   def initialize
     @balance = 0
@@ -17,7 +16,7 @@ MINIMUM_FARE = 1
   end
 
   def in_journey?
-    @journey[:entry] != nil ? true : false
+    @journey[:entry] != nil
   end
 
   def touch_in(station)
