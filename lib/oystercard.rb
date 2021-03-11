@@ -1,4 +1,4 @@
-require 'journey'
+require 'journeylog'
 
 class Oystercard
 
