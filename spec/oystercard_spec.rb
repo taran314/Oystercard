@@ -49,7 +49,8 @@ let(:station2) { Station.new("Waterloo", 1) }
     it "reduces the balance by the minimum fare on touch_out" do
       card.top_up(Oystercard::MINIMUM_FARE)
       card.touch_in(station)
-      expect { card.touch_out(station2) }.to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
+      expect { card.touch_out(station2) }
+      .to change { card.balance }.by(-Oystercard::MINIMUM_FARE)
     end
   end
 
